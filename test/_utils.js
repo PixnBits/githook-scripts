@@ -38,6 +38,7 @@ function setup(scripts) {
 
   // make it a git repo
   execSync('git init', { cwd: SAMPLE_REPO_LOCATION });
+
   // install deps
   execSync('npm --loglevel=silent install', { cwd: SAMPLE_REPO_LOCATION });
 

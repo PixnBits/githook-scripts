@@ -2,6 +2,8 @@ var path = require('path');
 var fs = require('fs');
 var exec = require('child_process').execSync;
 
+var debug = require('debug')('githook-scripts:postinstall');
+
 var VALID_HOOK_NAMES = [
   'applypatch-msg',
   'pre-applypatch',
@@ -24,7 +26,16 @@ var VALID_HOOK_NAMES = [
 
 // we're in .../parent-module/node_modules/githook-scripts
 var parentModulePath = path.resolve(process.cwd(), '../../');
-var parentModulePackage = require(path.join(parentModulePath, 'package.json'));
+var parentModulePackage;
+try {
+  // justification in the catch statement
+  parentModulePackage = require(path.join(parentModulePath, 'package.json')); // eslint-disable-line global-require
+} catch (err) {
+  // not used as a dependency, development
+  debug(err);
+  console.warn('githook-scripts: aborting hook installation, no parent package detected');
+  return;
+}
 
 var parentGitPath = exec(
   'git rev-parse --show-toplevel',
@@ -33,17 +44,11 @@ var parentGitPath = exec(
   .toString()
   .trim();
 
-console.log('--postinstall--');
-// console.log(process.cwd());
-// console.log('parentModulePath', parentModulePath);
-// console.log('parentModulePackage.scripts', parentModulePackage.scripts);
-// console.log('parentGitPath', parentGitPath);
-
 Object.keys(parentModulePackage.scripts)
   .forEach(function (scriptName) {
     var scriptParts = /^githook:(.+)$/.exec(scriptName);
     if (!scriptParts) {
-      console.info(scriptName + ' ignored');
+      debug(scriptName + ' ignored');
       return;
     }
 
@@ -56,7 +61,6 @@ Object.keys(parentModulePackage.scripts)
     var hookPath = path.join(parentGitPath, '.git/hooks', hookName);
     fs.writeFileSync(hookPath, '#!/bin/bash\n npm run ' + scriptName + ' "$@"');
     fs.chmodSync(hookPath, '755');
-    console.log('wrote ', hookPath);
+    debug('wrote ', hookPath);
+    console.log('githook-scripts: added hook ' + hookName);
   });
-
-console.log('--postinstall--');
