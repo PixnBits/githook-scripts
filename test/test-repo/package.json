@@ -1,0 +1,13 @@
+{
+  "name": "githook-scripts_test-repo",
+  "version": "0.1.0-pre",
+  "description": "test easily running npm scripts in the git lifecycle",
+  "main": "index.js",
+  "scripts": {
+    "githook:pre-commit": "exit 0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "githook-scripts": "../../"
+  }
+}

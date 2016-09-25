@@ -1,0 +1,12 @@
+{
+  extends: [
+    'eslint-config-airbnb/legacy'
+  ],
+  env: {
+    node: true
+  },
+  rules: {
+    // think in function scope
+    'vars-on-top': 0
+  }
+}
