@@ -2,7 +2,6 @@
   "name": "githook-scripts",
   "version": "0.1.0-pre",
   "description": "easily run npm scripts in the git lifecycle",
-  "main": "index.js",
   "scripts": {
     "lint": "eslint --ignore-path .gitignore ./",
     "pretest": "npm run lint",
@@ -25,10 +24,12 @@
     "url": "https://github.com/PixnBits/githook-scripts/issues"
   },
   "homepage": "https://github.com/PixnBits/githook-scripts",
+  "dependencies": {
+    "debug": "^2.2.0"
+  },
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-files": "^1.4.0",
-    "debug": "^2.2.0",
     "eslint": "^3.5.0",
     "eslint-config-airbnb": "^11.1.0",
     "eslint-plugin-import": "^1.15.0",
