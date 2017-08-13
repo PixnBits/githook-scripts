@@ -2,20 +2,26 @@ pipeline {
   agent any
   
   stages {
-    // stage('checkout') {
-    //   checkout scm
-    // }
     
-    stage('install') {
+    stage('checkout') {
       steps {
-        sh 'npm version'
-        sh 'npm install'
-      }
-    }
-    
-    stage('test') {
-      steps {
-        sh 'npm test'
+        checkout scm
+        docker.image('node:argon').inside {
+          
+          stage('install') {
+            steps {
+              sh 'npm version'
+              sh 'npm install'
+            }
+          }
+
+          stage('test') {
+            steps {
+              sh 'npm test'
+            }
+          }
+          
+        }
       }
     }
   }
