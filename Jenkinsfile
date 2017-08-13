@@ -5,7 +5,7 @@ pipeline {
     
     stage('checkout') {
       steps {
-        checkout scm
+        //checkout scm
         docker.image('node:argon').inside {
           
           stage('install') {
