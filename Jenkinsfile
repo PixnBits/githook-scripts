@@ -1,8 +1,8 @@
 pipeline {
   stages {
-    stage('checkout') {
-      checkout scm
-    }
+    // stage('checkout') {
+    //   checkout scm
+    // }
     
     stage('install') {
       sh 'npm version'
