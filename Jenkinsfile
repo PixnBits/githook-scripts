@@ -5,12 +5,16 @@ pipeline {
     // }
     
     stage('install') {
-      sh 'npm version'
-      sh 'npm install'
+      steps {
+        sh 'npm version'
+        sh 'npm install'
+      }
     }
     
     stage('test') {
-      sh 'npm test'
+      steps {
+        sh 'npm test'
+      }
     }
   }
 }
