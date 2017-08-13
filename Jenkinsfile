@@ -1,4 +1,4 @@
-def ourBuild {
+def ourBuild = {
   stage('checkout') {
     checkout scm
   }
