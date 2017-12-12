@@ -21,12 +21,12 @@ module.exports.teardown = teardown;
 function setPackageScripts(scripts) {
   var pkgPath = path.join(SAMPLE_REPO_LOCATION, 'package.json');
 
-  if (typeof scripts !== 'object') {
-    throw new Error('setPackageScripts requires an object');
+  if (typeof scripts !== 'object' && scripts !== undefined) {
+    throw new Error('setPackageScripts requires an object or undefined');
   }
 
   var pkg = JSON.parse(fs.readFileSync(pkgPath));
-  pkg.scripts = scripts || {};
+  pkg.scripts = scripts;
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
 }
 
