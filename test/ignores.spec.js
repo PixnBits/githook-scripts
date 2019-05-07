@@ -1,23 +1,22 @@
-var path = require('path');
+const path = require('path');
 
-var utils = require('./_utils.js');
-var SAMPLE_REPO_LOCATION = utils.SAMPLE_REPO_LOCATION;
+const chai = require('chai');
+const chaiFiles = require('chai-files');
 
-var chai = require('chai');
-var chaiFiles = require('chai-files');
-var expect = chai.expect;
-var file = chaiFiles.file;
+const { setup, teardown, SAMPLE_REPO_LOCATION } = require('./_utils');
 
 chai.use(chaiFiles);
+const { expect } = chai;
+const { file } = chaiFiles;
 
-describe('ignores', function () {
-  after(utils.teardown);
+describe('ignores', () => {
+  after(teardown);
 
-  it('should not add a hook file for non-hooks', function () {
-    var qwertyPath = path.join(SAMPLE_REPO_LOCATION, '.git', 'hooks', 'qwerty');
+  it('should not add a hook file for non-hooks', () => {
+    const qwertyPath = path.join(SAMPLE_REPO_LOCATION, '.git', 'hooks', 'qwerty');
 
-    utils.setup({
-      'githook:qwerty': 'node -e "console.log(\'qwerty\');"'
+    setup({
+      'githook:qwerty': 'node -e "console.log(\'qwerty\');"',
     });
 
     expect(file(qwertyPath)).to.not.exist;

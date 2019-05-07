@@ -1,6 +1,6 @@
 {
   extends: [
-    'eslint-config-airbnb/legacy'
+    'eslint-config-airbnb'
   ],
   env: {
     node: true
