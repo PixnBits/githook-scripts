@@ -1,12 +1,14 @@
 {
   extends: [
-    'eslint-config-airbnb/legacy'
+    'eslint-config-airbnb'
   ],
   env: {
     node: true
   },
   rules: {
     // think in function scope
-    'vars-on-top': 0
+    'vars-on-top': 0,
+    // this is a CLI tool, console methods are how it communicates with the user
+    'no-console': 0
   }
 }

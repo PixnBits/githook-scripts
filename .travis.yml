@@ -2,8 +2,8 @@ sudo: false
 
 language: node_js
 node_js:
-  - "6"
-  - "4"
+  - "10"
+  - "8"
 
 before_script:
   - git config --global user.name githook-scripts_user

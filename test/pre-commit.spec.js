@@ -1,17 +1,15 @@
-var execSync = require('child_process').execSync;
+const execSync = require('child_process').execSync;
 
-var utils = require('./_utils.js');
-var SAMPLE_REPO_LOCATION = utils.SAMPLE_REPO_LOCATION;
+const { expect } = require('chai');
 
-var chai = require('chai');
-var expect = chai.expect;
+const { setup, teardown, SAMPLE_REPO_LOCATION } = require('./_utils');
 
-describe('pre-commit', function () {
-  afterEach(utils.teardown);
+describe('pre-commit', () => {
+  afterEach(teardown);
 
-  it('should fail when the hook fails', function () {
-    utils.setup({
-      'githook:pre-commit': 'exit 1'
+  it('should fail when the hook fails', () => {
+    setup({
+      'githook:pre-commit': 'exit 1',
     });
 
     execSync(
@@ -32,11 +30,11 @@ describe('pre-commit', function () {
   it('should succeed when the hook succeeds', function () {
     this.timeout(5000); // times out on Travis with the default 2000
 
-    var commitMsgExpected = 'testing pre-commit';
-    var commitMsgActual = 'did not get set';
+    const commitMsgExpected = 'testing pre-commit';
+    let commitMsgActual = 'did not get set';
 
-    utils.setup({
-      'githook:pre-commit': 'exit 0'
+    setup({
+      'githook:pre-commit': 'exit 0',
     });
 
     execSync(
@@ -45,7 +43,7 @@ describe('pre-commit', function () {
     );
 
     commitMsgActual = execSync(
-      'git commit -m "' + commitMsgExpected + '"',
+      `git commit -m "${commitMsgExpected}"`,
       { cwd: SAMPLE_REPO_LOCATION }
     )
       .toString()
@@ -54,10 +52,10 @@ describe('pre-commit', function () {
     expect(commitMsgActual).to.contain(commitMsgExpected);
   });
 
-  xdescribe('running `npm test`', function () {
-    before(function () {
-      utils.setup({
-        'githook:pre-commit': 'npm run test'
+  xdescribe('running `npm test`', () => {
+    before(() => {
+      setup({
+        'githook:pre-commit': 'npm run test',
         // test: 'echo "Error: no test specified" && exit 1'
       });
     });

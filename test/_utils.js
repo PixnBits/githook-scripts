@@ -1,11 +1,11 @@
-var fs = require('fs');
-var path = require('path');
-var execSync = require('child_process').execSync;
+const fs = require('fs');
+const path = require('path');
+const execSync = require('child_process').execSync;
 
-var debug = require('debug')('githook-scripts:test-utils');
-var rimraf = require('rimraf');
+const debug = require('debug')('githook-scripts:test-utils');
+const rimraf = require('rimraf');
 
-var SAMPLE_REPO_LOCATION = path.join(__dirname, 'test-repo');
+const SAMPLE_REPO_LOCATION = path.join(__dirname, 'test-repo');
 
 module.exports.SAMPLE_REPO_LOCATION = SAMPLE_REPO_LOCATION;
 
@@ -19,13 +19,13 @@ function teardown() {
 module.exports.teardown = teardown;
 
 function setPackageScripts(scripts) {
-  var pkgPath = path.join(SAMPLE_REPO_LOCATION, 'package.json');
+  const pkgPath = path.join(SAMPLE_REPO_LOCATION, 'package.json');
 
   if (typeof scripts !== 'object' && scripts !== undefined) {
     throw new Error('setPackageScripts requires an object or undefined');
   }
 
-  var pkg = JSON.parse(fs.readFileSync(pkgPath));
+  const pkg = JSON.parse(fs.readFileSync(pkgPath));
   pkg.scripts = scripts;
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
 }

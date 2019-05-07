@@ -1,15 +1,15 @@
-var utils = require('./_utils.js');
+const chai = require('chai');
+const chaiFiles = require('chai-files');
 
-var chai = require('chai');
-var chaiFiles = require('chai-files');
-var expect = chai.expect;
+const { setup, teardown } = require('./_utils');
 
+const { expect } = chai;
 chai.use(chaiFiles);
 
-describe('no scripts', function () {
-  after(utils.teardown);
+describe('no scripts', () => {
+  after(teardown);
 
-  it('should not fail if a package.json does not have a scripts field', function () {
-    expect(function () { utils.setup(undefined); }).not.to.throw();
+  it('should not fail if a package.json does not have a scripts field', () => {
+    expect(() => { setup(undefined); }).not.to.throw();
   });
 });
