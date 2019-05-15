@@ -4,7 +4,7 @@
   "description": "easily run npm scripts in the git lifecycle",
   "scripts": {
     "lint": "eslint --ignore-path .gitignore ./",
-    "pretest": "npm run lint",
+    "pretest": "npm run lint && npm pack",
     "test": "mocha \"test/*.spec.js\"",
     "postinstall": "node postinstall.js"
   },

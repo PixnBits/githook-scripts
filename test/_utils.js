@@ -6,6 +6,13 @@ var spawnSync = require('child_process').spawnSync;
 var debug = require('debug')('githook-scripts:test-utils');
 var rimraf = require('rimraf');
 
+var packedDepPackage = require('./../package.json');
+
+var packedDepFilename = packedDepPackage.name + '-' + packedDepPackage.version + '.tgz';
+var packedDepPath = path.resolve(__dirname, '../', packedDepFilename);
+
+console.log('packedDepPath: ' + packedDepPath);
+
 var SAMPLE_REPO_LOCATION = path.join(__dirname, 'test-repo');
 var BROKEN_GIT_LOCATION = path.join(__dirname, 'broken-git');
 
@@ -22,8 +29,10 @@ function teardown() {
 }
 module.exports.teardown = teardown;
 
-function setPackageScripts(scripts) {
+function setPackageContent(opts) {
   var pkgPath = path.join(SAMPLE_REPO_LOCATION, 'package.json');
+  var scripts = opts.scripts;
+  var devDependencies = opts.devDependencies;
 
   if (typeof scripts !== 'object' && scripts !== undefined) {
     throw new Error('setPackageScripts requires an object or undefined');
@@ -31,6 +40,7 @@ function setPackageScripts(scripts) {
 
   var pkg = JSON.parse(fs.readFileSync(pkgPath));
   pkg.scripts = scripts;
+  pkg.devDependencies = devDependencies;
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
 }
 
@@ -38,7 +48,10 @@ function setup(scripts, opts) {
   // ensure no previous artifacts remain
   teardown();
 
-  setPackageScripts(scripts);
+  setPackageContent({
+    scripts: scripts,
+    devDependencies: { 'githook-scripts': packedDepPath }
+  });
 
   // make it a git repo
   debug('git init: ' + execSync('git init', { cwd: SAMPLE_REPO_LOCATION }).toString());
