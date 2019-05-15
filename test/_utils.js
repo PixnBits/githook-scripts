@@ -10,9 +10,11 @@ var SAMPLE_REPO_LOCATION = path.join(__dirname, 'test-repo');
 module.exports.SAMPLE_REPO_LOCATION = SAMPLE_REPO_LOCATION;
 
 function teardown() {
+  // avoid confusing git, or us
   rimraf.sync(path.join(SAMPLE_REPO_LOCATION, '.git'));
-  rimraf.sync(path.join(SAMPLE_REPO_LOCATION, 'node_modules'));
-  // console.log(execSync('git clean -fdxn', { cwd: SAMPLE_REPO_LOCATION }).toString());
+  // reset to base state, as stored by git
+  debug('clean: ' + execSync('git clean -fdx "' + SAMPLE_REPO_LOCATION + '"').toString());
+  debug('checkout: ' + execSync('git checkout -- "' + SAMPLE_REPO_LOCATION + '"').toString());
 
   debug('teardown finished');
 }
