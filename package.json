@@ -1,6 +1,6 @@
 {
   "name": "githook-scripts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "easily run npm scripts in the git lifecycle",
   "scripts": {
     "lint": "eslint --ignore-path .gitignore ./",
