@@ -1,0 +1,9 @@
+# node & npm
+node_modules
+npm-debug.log
+*.tgz
+
+# test
+test
+.eslintrc
+.travis.yml
