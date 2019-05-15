@@ -37,12 +37,20 @@ try {
   return;
 }
 
-var parentGitPath = exec(
-  'git rev-parse --show-toplevel',
-  { cwd: parentModulePath }
-)
-  .toString()
-  .trim();
+var parentGitPath;
+try {
+  parentGitPath = exec(
+    'git rev-parse --show-toplevel',
+    { cwd: parentModulePath }
+  )
+    .toString()
+    .trim();
+} catch (err) {
+  // git may not be installed
+  debug(err);
+  console.warn('githook-scripts: unable to run git to find the top level, skipping');
+  return;
+}
 
 if (!parentModulePackage.scripts || typeof parentModulePackage.scripts !== 'object') {
   console.warn('githook-scripts: no "scripts" field in package.json, skipping');

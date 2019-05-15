@@ -6,6 +6,7 @@ var debug = require('debug')('githook-scripts:test-utils');
 var rimraf = require('rimraf');
 
 var SAMPLE_REPO_LOCATION = path.join(__dirname, 'test-repo');
+var BROKEN_GIT_LOCATION = path.join(__dirname, 'broken-git');
 
 module.exports.SAMPLE_REPO_LOCATION = SAMPLE_REPO_LOCATION;
 
@@ -32,17 +33,25 @@ function setPackageScripts(scripts) {
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
 }
 
-function setup(scripts) {
+function setup(scripts, opts) {
   // ensure no previous artifacts remain
   teardown();
 
   setPackageScripts(scripts);
 
   // make it a git repo
-  execSync('git init', { cwd: SAMPLE_REPO_LOCATION });
+  debug('git init: ' + execSync('git init', { cwd: SAMPLE_REPO_LOCATION }).toString());
 
   // install deps
-  execSync('npm --loglevel=silent install', { cwd: SAMPLE_REPO_LOCATION });
+  var npmExecOpts = { cwd: SAMPLE_REPO_LOCATION };
+  if (opts && opts.disableGit) {
+    npmExecOpts.env = Object.assign(
+      {},
+      process.env,
+      { PATH: BROKEN_GIT_LOCATION + (process.platform === 'win32' ? ';' : ':') + process.env.PATH }
+    );
+  }
+  debug('npm install: ' + execSync('npm --loglevel=silent install', npmExecOpts).toString());
 
   debug('setup finished');
 }

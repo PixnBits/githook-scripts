@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "simulating invoking git failing"
+exit 1
