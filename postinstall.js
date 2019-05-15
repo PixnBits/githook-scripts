@@ -44,27 +44,28 @@ var parentGitPath = exec(
   .toString()
   .trim();
 
-if (parentModulePackage.scripts && typeof parentModulePackage.scripts === 'object') {
-  Object.keys(parentModulePackage.scripts)
-    .forEach(function (scriptName) {
-      var scriptParts = /^githook:(.+)$/.exec(scriptName);
-      if (!scriptParts) {
-        debug(scriptName + ' ignored');
-        return;
-      }
-
-      var hookName = scriptParts[1];
-      if (VALID_HOOK_NAMES.indexOf(hookName) === -1) {
-        console.warn('githook-scripts: "' + hookName + '" is not a valid git hook, ignoring');
-        return;
-      }
-
-      var hookPath = path.join(parentGitPath, '.git/hooks', hookName);
-      fs.writeFileSync(hookPath, '#!/bin/bash\n npm run ' + scriptName + ' "$@"');
-      fs.chmodSync(hookPath, '755');
-      debug('wrote ', hookPath);
-      console.log('githook-scripts: added hook ' + hookName);
-    });
-} else {
+if (!parentModulePackage.scripts || typeof parentModulePackage.scripts !== 'object') {
   console.warn('githook-scripts: no "scripts" field in package.json, skipping');
+  return;
 }
+
+Object.keys(parentModulePackage.scripts)
+  .forEach(function (scriptName) {
+    var scriptParts = /^githook:(.+)$/.exec(scriptName);
+    if (!scriptParts) {
+      debug(scriptName + ' ignored');
+      return;
+    }
+
+    var hookName = scriptParts[1];
+    if (VALID_HOOK_NAMES.indexOf(hookName) === -1) {
+      console.warn('githook-scripts: "' + hookName + '" is not a valid git hook, ignoring');
+      return;
+    }
+
+    var hookPath = path.join(parentGitPath, '.git/hooks', hookName);
+    fs.writeFileSync(hookPath, '#!/bin/bash\n npm run ' + scriptName + ' "$@"');
+    fs.chmodSync(hookPath, '755');
+    debug('wrote ', hookPath);
+    console.log('githook-scripts: added hook ' + hookName);
+  });
