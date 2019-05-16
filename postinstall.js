@@ -57,6 +57,19 @@ if (!parentModulePackage.scripts || typeof parentModulePackage.scripts !== 'obje
   return;
 }
 
+var gitHooksDirectoryPath = path.join(parentGitPath, '.git/hooks');
+// `git init` can use templates that do not include a hooks directory
+try {
+  fs.statSync(gitHooksDirectoryPath);
+} catch (gitHooksDirectoryPathDoesNotExistError) {
+  fs.mkdirSync(gitHooksDirectoryPath);
+}
+
+if (!fs.statSync(gitHooksDirectoryPath).isDirectory()) {
+  console.warn('githook-scripts: the .git/hooks path exists but is not a directory, unable to install hooks');
+  return;
+}
+
 Object.keys(parentModulePackage.scripts)
   .forEach(function (scriptName) {
     var scriptParts = /^githook:(.+)$/.exec(scriptName);
@@ -71,7 +84,7 @@ Object.keys(parentModulePackage.scripts)
       return;
     }
 
-    var hookPath = path.join(parentGitPath, '.git/hooks', hookName);
+    var hookPath = path.join(gitHooksDirectoryPath, hookName);
     fs.writeFileSync(hookPath, '#!/bin/bash\n npm run ' + scriptName + ' "$@"');
     fs.chmodSync(hookPath, '755');
     debug('wrote ', hookPath);
