@@ -41,6 +41,9 @@ function setup(scripts, opts) {
 
   // make it a git repo
   debug('git init: ' + execSync('git init', { cwd: SAMPLE_REPO_LOCATION }).toString());
+  if (opts && opts.afterGitInit) {
+    opts.afterGitInit();
+  }
 
   // install deps
   var npmExecOpts = { cwd: SAMPLE_REPO_LOCATION };
