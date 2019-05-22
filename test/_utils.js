@@ -11,8 +11,6 @@ var packedDepPackage = require('./../package.json');
 var packedDepFilename = packedDepPackage.name + '-' + packedDepPackage.version + '.tgz';
 var packedDepPath = path.resolve(__dirname, '../', packedDepFilename);
 
-console.log('packedDepPath: ' + packedDepPath);
-
 var SAMPLE_REPO_LOCATION = path.join(__dirname, 'test-repo');
 var BROKEN_GIT_LOCATION = path.join(__dirname, 'broken-git');
 
