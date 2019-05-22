@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var execSync = require('child_process').execSync;
+var spawnSync = require('child_process').spawnSync;
 
 var debug = require('debug')('githook-scripts:test-utils');
 var rimraf = require('rimraf');
@@ -54,8 +55,17 @@ function setup(scripts, opts) {
       { PATH: BROKEN_GIT_LOCATION + (process.platform === 'win32' ? ';' : ':') + process.env.PATH }
     );
   }
-  debug('npm install: ' + execSync('npm --loglevel=silent install', npmExecOpts).toString());
+  var npmInstallResults = spawnSync('npm', ['--loglevel=silent', 'install'], npmExecOpts);
+  var rawLogs = '' + npmInstallResults.stdout + '\n' + npmInstallResults.stderr;
+  debug('npm install: ' + rawLogs);
 
   debug('setup finished');
+
+  return rawLogs
+    .split('\n')
+    .filter(function (line) {
+      debug(line.startsWith('githook-scripts:') + ' ' + line);
+      return line.startsWith('githook-scripts:');
+    });
 }
 module.exports.setup = setup;

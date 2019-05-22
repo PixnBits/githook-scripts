@@ -70,23 +70,45 @@ if (!fs.statSync(gitHooksDirectoryPath).isDirectory()) {
   return;
 }
 
-Object.keys(parentModulePackage.scripts)
-  .forEach(function (scriptName) {
+var githookNames = Object
+  .keys(parentModulePackage.scripts)
+  .map(function (scriptName) {
     var scriptParts = /^githook:(.+)$/.exec(scriptName);
     if (!scriptParts) {
       debug(scriptName + ' ignored');
-      return;
+      return false;
     }
-
     var hookName = scriptParts[1];
-    if (VALID_HOOK_NAMES.indexOf(hookName) === -1) {
-      console.warn('githook-scripts: "' + hookName + '" is not a valid git hook, ignoring');
-      return;
-    }
-
-    var hookPath = path.join(gitHooksDirectoryPath, hookName);
-    fs.writeFileSync(hookPath, '#!/bin/bash\n npm run ' + scriptName + ' "$@"');
-    fs.chmodSync(hookPath, '755');
-    debug('wrote ', hookPath);
-    console.log('githook-scripts: added hook ' + hookName);
+    return hookName;
+  })
+  .filter(function (hookName) {
+    return !!hookName;
   });
+
+if (githookNames.length <= 0) {
+  console.warn('githook-scripts: no githook scripts found, add one (ex: "githook:pre-commit") to package.json and run "npm rebuild githook-scripts" to activate');
+  return;
+}
+
+var validGithookNames = githookNames.filter(function (hookName) {
+  if (VALID_HOOK_NAMES.indexOf(hookName) >= 0) {
+    return true;
+  }
+  console.warn('githook-scripts: "' + hookName + '" is not a valid git hook, ignoring');
+  return false;
+});
+
+if (validGithookNames.length <= 0) {
+  console.warn('githook-scripts: no valid githook scripts found, add one (ex: "githook:pre-commit") to package.json and run "npm rebuild githook-scripts" to activate');
+  console.warn('githook-scripts: valid githooks are ' + VALID_HOOK_NAMES.join(', '));
+  return;
+}
+
+validGithookNames.forEach(function (hookName) {
+  var hookPath = path.join(gitHooksDirectoryPath, hookName);
+  var scriptName = 'githook:' + hookName;
+  fs.writeFileSync(hookPath, '#!/bin/bash\n npm run ' + scriptName + ' "$@"');
+  fs.chmodSync(hookPath, '755');
+  debug('wrote ', hookPath);
+  console.log('githook-scripts: added hook ' + hookName);
+});
