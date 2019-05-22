@@ -30,8 +30,6 @@ describe('pre-commit', function () {
   });
 
   it('should succeed when the hook succeeds', function () {
-    this.timeout(5000); // times out on Travis with the default 2000
-
     var commitMsgExpected = 'testing pre-commit';
     var commitMsgActual = 'did not get set';
 
