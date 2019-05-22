@@ -7,6 +7,8 @@
   },
   rules: {
     // think in function scope
-    'vars-on-top': 0
+    'vars-on-top': 0,
+    // command line tool
+    'no-console': 0
   }
 }
